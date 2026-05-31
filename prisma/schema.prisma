@@ -1,0 +1,271 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  ADMIN
+  ANALYST
+  VIEWER
+}
+
+enum NotificationType {
+  INFO
+  SUCCESS
+  WARNING
+  ERROR
+  SYSTEM
+}
+
+enum ReportStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum DatasetStatus {
+  PROCESSING
+  READY
+  ERROR
+}
+
+enum ActivityAction {
+  LOGIN
+  LOGOUT
+  CREATE
+  UPDATE
+  DELETE
+  EXPORT
+  IMPORT
+  VIEW
+  SHARE
+}
+
+model Organization {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  domain      String?
+  logoUrl     String?
+  industry    String?
+  size        String?
+  plan        String   @default("pro")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  users       User[]
+  datasets    Dataset[]
+  reports     Report[]
+}
+
+model User {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  name           String
+  passwordHash   String
+  role           UserRole  @default(VIEWER)
+  emailVerified  DateTime?
+  avatar         String?
+  jobTitle       String?
+  department     String?
+  isActive       Boolean   @default(true)
+  lastLoginAt    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+
+  reports        Report[]
+  activityLogs   ActivityLog[]
+  notifications  Notification[]
+  dashboardLayout DashboardLayout?
+  datasets       Dataset[]
+  apiKeys        ApiKey[]
+
+  @@index([email])
+  @@index([organizationId])
+}
+
+model Report {
+  id             String       @id @default(cuid())
+  name           String
+  description    String?
+  type           String       // sales | revenue | users | products | regional | marketing | custom
+  status         ReportStatus @default(DRAFT)
+  config         Json         // chart config, filters, metrics
+  isScheduled    Boolean      @default(false)
+  scheduleFreq   String?      // daily | weekly | monthly
+  lastRunAt      DateTime?
+  nextRunAt      DateTime?
+  viewCount      Int          @default(0)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  createdById    String
+  createdBy      User         @relation(fields: [createdById], references: [id])
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+
+  @@index([createdById])
+  @@index([type])
+}
+
+model AnalyticsRecord {
+  id         String   @id @default(cuid())
+  date       DateTime
+  metric     String   // revenue | sessions | users | conversions | bounce_rate | avg_session etc
+  value      Float
+  dimension  String?  // optional breakdown dimension value
+  category   String?  // dimension category: channel | region | device | product
+  region     String?
+  source     String?  // organic | paid | direct | referral | social
+  createdAt  DateTime @default(now())
+
+  @@index([date])
+  @@index([metric])
+  @@index([category])
+  @@index([region])
+}
+
+model SalesRecord {
+  id          String   @id @default(cuid())
+  date        DateTime
+  product     String
+  sku         String
+  category    String
+  revenue     Float
+  units       Int
+  cogs        Float
+  margin      Float
+  region      String
+  country     String
+  channel     String   // online | retail | wholesale | partner
+  salesRep    String?
+  customerId  String?
+  createdAt   DateTime @default(now())
+
+  @@index([date])
+  @@index([product])
+  @@index([region])
+  @@index([channel])
+}
+
+model MarketingCampaign {
+  id           String   @id @default(cuid())
+  name         String
+  channel      String   // email | paid_search | social | display | content
+  status       String   // active | paused | completed | draft
+  startDate    DateTime
+  endDate      DateTime?
+  budget       Float
+  spend        Float    @default(0)
+  impressions  Int      @default(0)
+  clicks       Int      @default(0)
+  conversions  Int      @default(0)
+  revenue      Float    @default(0)
+  ctr          Float    @default(0)
+  cpc          Float    @default(0)
+  roas         Float    @default(0)
+  region       String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([channel])
+  @@index([status])
+  @@index([startDate])
+}
+
+model ActivityLog {
+  id         String         @id @default(cuid())
+  action     ActivityAction
+  entity     String         // user | report | dataset | setting | analytics
+  entityId   String?
+  entityName String?
+  metadata   Json?
+  ip         String?
+  userAgent  String?
+  createdAt  DateTime       @default(now())
+
+  userId     String
+  user       User           @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([action])
+  @@index([entity])
+  @@index([createdAt])
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  title     String
+  body      String
+  type      NotificationType @default(INFO)
+  read      Boolean          @default(false)
+  link      String?
+  metadata  Json?
+  createdAt DateTime         @default(now())
+
+  userId    String
+  user      User             @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([read])
+}
+
+model Dataset {
+  id           String        @id @default(cuid())
+  name         String
+  filename     String
+  originalName String
+  mimeType     String
+  size         Int           // bytes
+  rows         Int           @default(0)
+  columns      Json?         // array of { name, type }
+  preview      Json?         // first 10 rows
+  status       DatasetStatus @default(PROCESSING)
+  errorMessage String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  uploadedById   String
+  uploadedBy     User         @relation(fields: [uploadedById], references: [id])
+  organizationId String?
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+
+  @@index([uploadedById])
+  @@index([status])
+}
+
+model DashboardLayout {
+  id        String   @id @default(cuid())
+  config    Json     // array of { id, type, position: {x,y,w,h}, props }
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model ApiKey {
+  id          String    @id @default(cuid())
+  name        String
+  key         String    @unique
+  prefix      String    // first 8 chars for display
+  lastUsedAt  DateTime?
+  expiresAt   DateTime?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([key])
+}
