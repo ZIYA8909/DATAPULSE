@@ -7,7 +7,11 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 function createPrismaClient() {
-  const sql = neon(process.env.DATABASE_URL!);
+  if (!process.env.DATABASE_URL) {
+    // Build-time fallback — no DB needed during static analysis
+    return new PrismaClient();
+  }
+  const sql = neon(process.env.DATABASE_URL);
   const adapter = new PrismaNeon(sql);
   return new PrismaClient({
     adapter,
