@@ -1,36 +1,31 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📈 DataPulse
 
-## Getting Started
+A full-stack, enterprise-grade Business Intelligence (BI) & Data Analytics Dashboard that enables companies to monitor, visualize, and analyze their core business metrics in real time. DataPulse serves as a centralized command center to track revenue, user acquisition, product margins, and marketing performance.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Key Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+*   **🏠 Centralized Overview**: Dynamic dashboard tracking revenue growth, user trajectories, regional distribution, best-selling products, and live activity streams.
+*   **📊 Comprehensive Analytical Suites**:
+    *   **Sales**: Monitor transaction channels, deal pipelines, and sales representative performances.
+    *   **Revenue**: Track Monthly Recurring Revenue (MRR), Annual Recurring Revenue (ARR), profit margins, and cohort statistics.
+    *   **Users**: Monitor Daily Active Users (DAU), Monthly Active Users (MAU), conversion funnels, and session engagement.
+    *   **Products**: Review product categories, unit volume, cost of goods sold (COGS), and net profits.
+    *   **Regional**: Segment sales performance across geographic regions (e.g., North, South, West, East India).
+    *   **Marketing**: Analyze campaign performance including CTR, CPC, ROAS, and overall ROI.
+*   **📥 CSV Data Importer**: Drag-and-drop file upload interface allowing users to import external data, preview rows, and map columns to database schemas.
+*   **📅 Automated Reporting**: Schedule, build, and format custom reports to share insights across teams.
+*   **🛡️ Admin Control Panel**: Includes Role-Based Access Control (RBAC), user account management (activate/deactivate), API keys generator, and a comprehensive, paginated audit trail.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🛠️ Technology Stack
 
-## Learn More
+*   **Frontend**: [Next.js 16](https://nextjs.org/) (App Router), TypeScript, Tailwind CSS, shadcn/ui, and [Recharts](https://recharts.org/) (Data visualization)
+*   **Backend**: Next.js API Routes, [Auth.js v5](https://authjs.dev/) (JWT sessions & Middleware-based route protection), and bcryptjs (hashing)
+*   **Database**: [Neon PostgreSQL](https://neon.tech/) (Cloud-hosted serverless database) & [Prisma v7 ORM](https://www.prisma.io/)
+*   **Utilities**: [Zod](https://zod.dev/) (schema validation) & [Date-fns v4](https://date-fns.org/) (date calculations)
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
