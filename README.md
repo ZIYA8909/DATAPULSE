@@ -30,3 +30,4 @@ A full-stack, enterprise-grade Business Intelligence (BI) & Data Analytics Dashb
 ---
 
 ## 🛠️ Try it out - https://datapulse-y7x1.vercel.app/
+<img width="1918" height="1032" alt="Image" src="https://github.com/user-attachments/assets/df578456-208b-4ded-a15a-9f39fa5aab75" />
