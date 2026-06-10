@@ -29,4 +29,4 @@ A full-stack, enterprise-grade Business Intelligence (BI) & Data Analytics Dashb
 
 ---
 
-## 🛠️ Try it out - datapulse-y7x1.vercel.app
+## 🛠️ Try it out - https://datapulse-y7x1.vercel.app/
